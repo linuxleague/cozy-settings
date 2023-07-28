@@ -8821,10 +8821,10 @@ cozy-intent@2.7.0:
   dependencies:
     post-me "0.4.5"
 
-cozy-interapp@0.7.7:
-  version "0.7.7"
-  resolved "https://registry.yarnpkg.com/cozy-interapp/-/cozy-interapp-0.7.7.tgz#5b89df2485cda2a985a681e17aad03fdad6f59e4"
-  integrity sha512-8MWak/bEPdggb5iyzNOC73nXaxL8JEKLWbL/JmyoA6X2/Iwj2jc/Rf7Sw+xiddjB3D8C524BkcwLPFGuxhKGuA==
+cozy-interapp@0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/cozy-interapp/-/cozy-interapp-0.8.1.tgz#960fb98a2e93192980449b0b75521f47b4de7d22"
+  integrity sha512-yYCOMVKRjGzvu/TuTj/9jir+Zr3OvXGWJUu9J9dk1jMcBZqXq4D9uIdnqxMJlpovUUJnehzIdgCfbL3JKaZc0Q==
 
 cozy-interapp@^0.5.4:
   version "0.5.7"

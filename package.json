@@ -59,7 +59,7 @@
     "cozy-flags": "^3.0.1",
     "cozy-harvest-lib": "15.0.2",
     "cozy-intent": "2.7.0",
-    "cozy-interapp": "0.7.7",
+    "cozy-interapp": "0.8.1",
     "cozy-keys-lib": "5.0.0",
     "cozy-realtime": "3.14.4",
     "cozy-sharing": "3.10.0",

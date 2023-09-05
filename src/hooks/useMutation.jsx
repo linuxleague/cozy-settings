@@ -1,17 +1,20 @@
 import { useState } from 'react'
 import { useClient } from 'cozy-client'
 
-const useMutation = () => {
+const useMutation = ({ onSuccess } = {}) => {
   const client = useClient()
 
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState()
+  const [data, setData] = useState()
 
-  const mutate = async data => {
+  const mutate = async doc => {
     setError()
     setStatus('loading')
     try {
-      await client.save(data)
+      const resp = await client.save(doc)
+      setData(resp.data)
+      onSuccess && onSuccess(resp.data)
       setStatus('success')
     } catch (e) {
       setStatus('error')
@@ -23,6 +26,7 @@ const useMutation = () => {
     mutate,
     status,
     error,
+    data,
     isIdle: status === 'idle',
     isLoading: status === 'loading',
     isError: status === 'error',

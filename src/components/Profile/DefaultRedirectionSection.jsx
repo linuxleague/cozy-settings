@@ -2,9 +2,6 @@ import React from 'react'
 
 import { useI18n } from 'cozy-ui/transpiled/react/I18n'
 import { useClient, useQuery } from 'cozy-client'
-
-import Select from 'components/Select'
-import { buildAppsQuery, buildHomeSettingsQuery } from 'lib/queries'
 import { useWebviewIntent } from 'cozy-intent'
 import { isFlagshipApp } from 'cozy-device-helper'
 
@@ -15,11 +12,16 @@ import {
   shouldDisableDefaultRedirectionSnackbar,
   disableDefaultRedirectionSnackbar
 } from './helpers'
+import { useMutation } from 'hooks/useMutation'
+import Select from 'components/Select'
+import { buildAppsQuery, buildHomeSettingsQuery } from 'lib/queries'
+import { buildSettingsInstanceQuery } from 'lib/queries'
 
-const DefaultRedirectionSection = props => {
+const DefaultRedirectionSection = () => {
   const { t } = useI18n()
   const webviewIntent = useWebviewIntent()
   const client = useClient()
+  const { mutate, isLoading, isSuccess, error } = useMutation()
 
   const appsQuery = buildAppsQuery()
   const appsResult = useQuery(appsQuery.definition, appsQuery.options)
@@ -36,14 +38,22 @@ const DefaultRedirectionSection = props => {
 
   const options = formatOptions(apps, t)
 
-  const { fields, onChange } = props
+  const instanceQuery = buildSettingsInstanceQuery()
+  const { data: instance } = useQuery(
+    instanceQuery.definition,
+    instanceQuery.options
+  )
+
   const fieldProps = {
-    ...fields.default_redirection,
     title: t('ProfileView.default_redirection.title'),
-    label: t(`ProfileView.default_redirection.label`)
+    label: t(`ProfileView.default_redirection.label`),
+    submitting: isLoading,
+    saved: isSuccess,
+    errors: error ? [error] : []
   }
+
   const selectedSlug = getSelectedOption(
-    fields.default_redirection.value,
+    instance.default_redirection,
     options,
     t
   )
@@ -51,11 +61,18 @@ const DefaultRedirectionSection = props => {
 
   const onChangeSelection = sel => {
     const newDefaultRedirection = formatDefaultRedirection(sel.value)
-    onChange(fieldName, newDefaultRedirection)
+    mutate({
+      _rev: instance.meta.rev,
+      ...instance,
+      attributes: {
+        ...instance.attributes,
+        default_redirection: newDefaultRedirection
+      }
+    })
 
     if (
       shouldDisableDefaultRedirectionSnackbar(
-        fields.default_redirection.value,
+        instance.default_redirection,
         homeSettings
       )
     ) {
@@ -68,21 +85,19 @@ const DefaultRedirectionSection = props => {
   }
 
   return (
-    <div>
-      <Select
-        name={fieldName}
-        options={options.map(app => {
-          return {
-            value: app.slug,
-            label: app.name
-          }
-        })}
-        fieldProps={fieldProps}
-        value={selectedSlug}
-        onChange={onChangeSelection}
-        isSearchable={!isFlagshipApp()}
-      />
-    </div>
+    <Select
+      name={fieldName}
+      options={options.map(app => {
+        return {
+          value: app.slug,
+          label: app.name
+        }
+      })}
+      fieldProps={fieldProps}
+      value={selectedSlug}
+      onChange={onChangeSelection}
+      isSearchable={!isFlagshipApp()}
+    />
   )
 }
 
